@@ -6,30 +6,38 @@ struct MainView: View {
     @State private var showingExport = false
     @State private var showingDeleteAlert = false
     @State private var fileToDelete: ScannedFile?
+    @State private var columnVisibility: NavigationSplitViewVisibility = .all
 
     var body: some View {
-        NavigationSplitView {
+        NavigationSplitView(columnVisibility: $columnVisibility) {
             SidebarView(profile: $viewModel.profile, showingHistory: $showingHistory)
         } detail: {
             ZStack {
-                if viewModel.isScanning, let progress = viewModel.progress {
-                    ScanProgressView(
-                        progress: progress,
-                        isScanning: viewModel.isScanning,
-                        onCancel: { viewModel.cancelScan() }
-                    )
-                }
+                VStack(spacing: 0) {
+                    headerBar
 
-                FileListView(
-                    viewModel: viewModel,
-                    onRevealInFinder: { file in
-                        viewModel.revealInFinder(file)
-                    },
-                    onDelete: { file in
-                        fileToDelete = file
-                        showingDeleteAlert = true
+                    Divider()
+
+                    if viewModel.isScanning, let progress = viewModel.progress {
+                        ScanProgressView(
+                            progress: progress,
+                            isScanning: viewModel.isScanning,
+                            onCancel: { viewModel.cancelScan() }
+                        )
+                    } else {
+                        FileListView(
+                            viewModel: viewModel,
+                            onRevealInFinder: { file in
+                                viewModel.revealInFinder(file)
+                            },
+                            onDelete: { file in
+                                fileToDelete = file
+                                showingDeleteAlert = true
+                            }
+                        )
                     }
-                )
+                }
+                .background(Color(nsColor: .textBackgroundColor))
             }
             .overlay(alignment: .bottom) {
                 if let error = viewModel.errorMessage {
@@ -37,6 +45,7 @@ struct MainView: View {
                 }
             }
         }
+        .navigationSplitViewStyle(.balanced)
         .toolbar {
             ToolbarItemGroup(placement: .primaryAction) {
                 Button(action: {
@@ -75,6 +84,47 @@ struct MainView: View {
                 Text("Are you sure you want to move \"\(file.name)\" to Trash?")
             }
         }
+    }
+
+    private var headerBar: some View {
+        HStack {
+            VStack(alignment: .leading, spacing: 2) {
+                if viewModel.allFiles.isEmpty && !viewModel.isScanning {
+                    Text("Ready to scan")
+                        .font(.headline)
+                    Text("Configure filters and click Scan")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                } else if viewModel.isScanning {
+                    Text("Scanning...")
+                        .font(.headline)
+                    Text(viewModel.profile.directory)
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                        .lineLimit(1)
+                        .truncationMode(.middle)
+                } else {
+                    let count = viewModel.files.count
+                    let total = viewModel.allFiles.count
+                    if count == total {
+                        Text("\(count) files found")
+                            .font(.headline)
+                    } else {
+                        Text("\(count) of \(total) files")
+                            .font(.headline)
+                    }
+                    Text(viewModel.profile.directory)
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                        .lineLimit(1)
+                        .truncationMode(.middle)
+                }
+            }
+            Spacer()
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 12)
+        .background(Color(nsColor: .windowBackgroundColor))
     }
 
     @ViewBuilder

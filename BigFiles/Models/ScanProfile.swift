@@ -9,7 +9,9 @@ struct ScanProfile: Codable, Identifiable, Hashable {
     var excludePatterns: [String]
     var excludeSystemDirs: Bool
     var sortBy: SortField
+    var secondarySortBy: SortField?
     var limit: Int
+    var searchText: String
 
     enum SortField: String, Codable, CaseIterable {
         case size = "Size"
@@ -35,7 +37,9 @@ struct ScanProfile: Codable, Identifiable, Hashable {
         excludePatterns: [String] = [],
         excludeSystemDirs: Bool = true,
         sortBy: SortField = .size,
-        limit: Int = 50
+        secondarySortBy: SortField? = nil,
+        limit: Int = 50,
+        searchText: String = ""
     ) {
         self.id = UUID()
         self.directory = directory
@@ -45,6 +49,8 @@ struct ScanProfile: Codable, Identifiable, Hashable {
         self.excludePatterns = excludePatterns
         self.excludeSystemDirs = excludeSystemDirs
         self.sortBy = sortBy
+        self.secondarySortBy = secondarySortBy
         self.limit = limit
+        self.searchText = searchText
     }
 }

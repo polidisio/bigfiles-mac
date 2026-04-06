@@ -7,22 +7,24 @@ struct FileListView: View {
 
     var body: some View {
         Group {
-            if viewModel.files.isEmpty && !viewModel.isScanning {
-                emptyState
+            if viewModel.allFiles.isEmpty && !viewModel.isScanning {
+                emptyState(message: "Configure your search and click Scan", icon: "doc.text.magnifyingglass")
+            } else if viewModel.files.isEmpty && !viewModel.allFiles.isEmpty {
+                emptyState(message: "No files match your filter", icon: "line.3.horizontal.decrease.circle")
             } else {
                 fileList
             }
         }
     }
 
-    private var emptyState: some View {
+    private func emptyState(message: String, icon: String) -> some View {
         VStack(spacing: 16) {
-            Image(systemName: "doc.text.magnifyingglass")
+            Image(systemName: icon)
                 .font(.system(size: 48))
                 .foregroundColor(.secondary)
             Text("No Files Found")
                 .font(.title2)
-            Text("Configure your search and click Scan")
+            Text(message)
                 .font(.subheadline)
                 .foregroundColor(.secondary)
         }
@@ -41,9 +43,11 @@ struct FileListView: View {
                         onDelete: { onDelete(file) }
                     )
                     Divider()
+                    .padding(.leading, 56)
                 }
             }
         }
+        .background(Color(nsColor: .textBackgroundColor))
     }
 }
 
@@ -59,12 +63,13 @@ struct FileRowView: View {
             Image(systemName: fileIcon(for: file.extension_))
                 .font(.title2)
                 .foregroundColor(.accentColor)
-                .frame(width: 28)
+                .frame(width: 32)
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(file.name)
                     .font(.body)
                     .lineLimit(1)
+                    .foregroundColor(.primary)
                 Text(file.path)
                     .font(.caption)
                     .foregroundColor(.secondary)
@@ -78,6 +83,7 @@ struct FileRowView: View {
                 .font(.subheadline)
                 .foregroundColor(.secondary)
                 .frame(width: 80, alignment: .trailing)
+                .monospacedDigit()
 
             Text(file.modifiedDescription)
                 .font(.caption)
@@ -86,7 +92,7 @@ struct FileRowView: View {
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 10)
-        .background(isSelected ? Color.accentColor.opacity(0.1) : Color.clear)
+        .background(isSelected ? Color.accentColor.opacity(0.15) : Color.clear)
         .contentShape(Rectangle())
         .onTapGesture { onSelect() }
         .contextMenu {
