@@ -47,7 +47,7 @@ struct FileListView: View {
                 }
             }
         }
-        .background(Color(nsColor: .textBackgroundColor))
+        .background(Color(red: 0.961, green: 0.961, blue: 0.969))
     }
 }
 
