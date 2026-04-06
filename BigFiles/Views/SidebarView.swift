@@ -19,7 +19,7 @@ struct SidebarView: View {
             .padding(.top, 12)
         }
         .frame(minWidth: 220)
-        .background(Color(nsColor: .controlBackgroundColor).opacity(0.95))
+        .background(Color(red: 0.812, green: 0.812, blue: 0.812))
     }
 
     private var searchSection: some View {
@@ -41,6 +41,10 @@ struct SidebarView: View {
         .padding(10)
         .background(Color(nsColor: .windowBackgroundColor))
         .cornerRadius(8)
+        .overlay(
+            RoundedRectangle(cornerRadius: 8)
+                .stroke(Color.gray.opacity(0.3), lineWidth: 1)
+        )
         .shadow(color: .black.opacity(0.05), radius: 2, x: 0, y: 1)
     }
 
@@ -53,6 +57,10 @@ struct SidebarView: View {
         .padding(10)
         .background(Color(nsColor: .windowBackgroundColor))
         .cornerRadius(8)
+        .overlay(
+            RoundedRectangle(cornerRadius: 8)
+                .stroke(Color.gray.opacity(0.3), lineWidth: 1)
+        )
         .shadow(color: .black.opacity(0.05), radius: 2, x: 0, y: 1)
     }
 
@@ -116,6 +124,10 @@ struct SidebarView: View {
         .padding(10)
         .background(Color(nsColor: .windowBackgroundColor))
         .cornerRadius(8)
+        .overlay(
+            RoundedRectangle(cornerRadius: 8)
+                .stroke(Color.gray.opacity(0.3), lineWidth: 1)
+        )
         .shadow(color: .black.opacity(0.05), radius: 2, x: 0, y: 1)
     }
 
@@ -156,6 +168,10 @@ struct SidebarView: View {
         .padding(10)
         .background(Color(nsColor: .windowBackgroundColor))
         .cornerRadius(8)
+        .overlay(
+            RoundedRectangle(cornerRadius: 8)
+                .stroke(Color.gray.opacity(0.3), lineWidth: 1)
+        )
         .shadow(color: .black.opacity(0.05), radius: 2, x: 0, y: 1)
     }
 
@@ -186,6 +202,10 @@ struct SidebarView: View {
         .padding(10)
         .background(Color(nsColor: .windowBackgroundColor))
         .cornerRadius(8)
+        .overlay(
+            RoundedRectangle(cornerRadius: 8)
+                .stroke(Color.gray.opacity(0.3), lineWidth: 1)
+        )
         .shadow(color: .black.opacity(0.05), radius: 2, x: 0, y: 1)
     }
 
@@ -203,6 +223,10 @@ struct SidebarView: View {
             .padding(10)
             .background(Color(nsColor: .windowBackgroundColor))
             .cornerRadius(8)
+            .overlay(
+                RoundedRectangle(cornerRadius: 8)
+                    .stroke(Color.gray.opacity(0.3), lineWidth: 1)
+            )
             .shadow(color: .black.opacity(0.05), radius: 2, x: 0, y: 1)
         }
         .buttonStyle(.plain)
