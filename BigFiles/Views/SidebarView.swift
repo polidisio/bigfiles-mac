@@ -5,86 +5,83 @@ struct SidebarView: View {
     @Binding var showingHistory: Bool
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 12) {
-                searchSection
+        List {
+            Section {
+                searchField
+            }
+            .listRowBackground(Color.clear)
+
+            Section {
                 directorySection
                 sizeSection
                 sortSection
                 optionsSection
-                Spacer(minLength: 20)
+            }
+            .listRowBackground(Color(nsColor: .controlBackgroundColor).opacity(0.5))
+
+            Section {
                 historyButton
             }
-            .padding(.horizontal, 12)
-            .padding(.top, 12)
+            .listRowBackground(Color(nsColor: .controlBackgroundColor).opacity(0.5))
         }
-        .frame(minWidth: 220)
-        .background(Color(red: 0.812, green: 0.812, blue: 0.812))
+        .listStyle(.sidebar)
+        .scrollContentBackground(.hidden)
+        .background(Color(nsColor: .controlBackgroundColor).opacity(0.4))
     }
 
-    private var searchSection: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            sectionLabel("Search")
-
-            HStack {
-                Image(systemName: "magnifyingglass")
-                    .foregroundColor(.secondary)
-                    .font(.caption)
-                TextField("Filter files...", text: $profile.searchText)
-                    .textFieldStyle(.plain)
-                    .font(.caption)
-            }
-            .padding(8)
-            .background(Color(nsColor: .textBackgroundColor))
-            .cornerRadius(6)
+    private var searchField: some View {
+        HStack {
+            Image(systemName: "magnifyingglass")
+                .foregroundColor(.secondary)
+                .font(.caption)
+            TextField("Buscar...", text: $profile.searchText)
+                .textFieldStyle(.plain)
+                .font(.caption)
         }
-        .padding(10)
-        .background(Color(nsColor: .windowBackgroundColor))
-        .cornerRadius(8)
-        .overlay(
-            RoundedRectangle(cornerRadius: 8)
-                .stroke(Color.gray.opacity(0.3), lineWidth: 1)
-        )
-        .shadow(color: .black.opacity(0.05), radius: 2, x: 0, y: 1)
+        .padding(.vertical, 6)
+        .padding(.horizontal, 8)
+        .background(Color(nsColor: .textBackgroundColor))
+        .cornerRadius(6)
     }
 
     private var directorySection: some View {
         VStack(alignment: .leading, spacing: 6) {
-            sectionLabel("Directory")
+            Text("DIRECTORIO")
+                .font(.caption2)
+                .fontWeight(.semibold)
+                .foregroundColor(.secondary)
+                .tracking(0.5)
 
             DirectoryPickerButton(directory: $profile.directory)
         }
-        .padding(10)
-        .background(Color(nsColor: .windowBackgroundColor))
-        .cornerRadius(8)
-        .overlay(
-            RoundedRectangle(cornerRadius: 8)
-                .stroke(Color.gray.opacity(0.3), lineWidth: 1)
-        )
-        .shadow(color: .black.opacity(0.05), radius: 2, x: 0, y: 1)
+        .padding(.vertical, 4)
     }
 
     private var sizeSection: some View {
         VStack(alignment: .leading, spacing: 8) {
-            sectionLabel("Size Filter")
+            Text("TAMAÑO")
+                .font(.caption2)
+                .fontWeight(.semibold)
+                .foregroundColor(.secondary)
+                .tracking(0.5)
 
-            VStack(spacing: 6) {
+            VStack(spacing: 8) {
                 HStack {
-                    Text("Min:")
+                    Text("Mínimo:")
                         .font(.caption)
                         .foregroundColor(.secondary)
+                    Spacer()
                     Text("\(Int(profile.minSizeMB)) MB")
                         .font(.caption)
                         .fontWeight(.medium)
-                    Spacer()
                 }
                 Slider(value: $profile.minSizeMB, in: 1...1000, step: 1)
                     .labelsHidden()
-            }
 
-            VStack(spacing: 6) {
+                Divider()
+
                 HStack {
-                    Text("Max:")
+                    Text("Máximo:")
                         .font(.caption)
                         .foregroundColor(.secondary)
                     if let maxMB = profile.maxSizeMB {
@@ -92,7 +89,7 @@ struct SidebarView: View {
                             .font(.caption)
                             .fontWeight(.medium)
                     } else {
-                        Text("None")
+                        Text("Sin límite")
                             .font(.caption)
                             .foregroundColor(.secondary)
                     }
@@ -106,6 +103,7 @@ struct SidebarView: View {
                         .buttonStyle(.plain)
                     }
                 }
+
                 if profile.maxSizeMB != nil {
                     Slider(value: Binding(
                         get: { profile.maxSizeMB ?? 500 },
@@ -113,7 +111,7 @@ struct SidebarView: View {
                     ), in: 1...10000, step: 10)
                     .labelsHidden()
                 } else {
-                    Button("Set Max") {
+                    Button("Establecer máximo") {
                         profile.maxSizeMB = 500
                     }
                     .font(.caption2)
@@ -121,123 +119,99 @@ struct SidebarView: View {
                 }
             }
         }
-        .padding(10)
-        .background(Color(nsColor: .windowBackgroundColor))
-        .cornerRadius(8)
-        .overlay(
-            RoundedRectangle(cornerRadius: 8)
-                .stroke(Color.gray.opacity(0.3), lineWidth: 1)
-        )
-        .shadow(color: .black.opacity(0.05), radius: 2, x: 0, y: 1)
+        .padding(.vertical, 4)
     }
 
     private var sortSection: some View {
         VStack(alignment: .leading, spacing: 8) {
-            sectionLabel("Sort By")
+            Text("ORDENAR")
+                .font(.caption2)
+                .fontWeight(.semibold)
+                .foregroundColor(.secondary)
+                .tracking(0.5)
 
-            HStack {
-                Text("Primary:")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-                    .frame(width: 50, alignment: .leading)
-                Picker("", selection: $profile.sortBy) {
-                    ForEach(ScanProfile.SortField.allCases, id: \.self) { field in
-                        Text(field.rawValue).tag(field)
+            VStack(spacing: 8) {
+                HStack {
+                    Text("Principal:")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                    Spacer()
+                    Picker("", selection: $profile.sortBy) {
+                        ForEach(ScanProfile.SortField.allCases, id: \.self) { field in
+                            Text(field.rawValue).tag(field)
+                        }
                     }
+                    .labelsHidden()
+                    .frame(width: 100)
                 }
-                .labelsHidden()
-            }
 
-            HStack {
-                Text("Secondary:")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-                    .frame(width: 50, alignment: .leading)
-                Picker("", selection: Binding(
-                    get: { profile.secondarySortBy ?? .name },
-                    set: { profile.secondarySortBy = $0 }
-                )) {
-                    Text("None").tag(ScanProfile.SortField.name)
-                    ForEach(ScanProfile.SortField.allCases, id: \.self) { field in
-                        Text(field.rawValue).tag(field)
+                HStack {
+                    Text("Secundario:")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                    Spacer()
+                    Picker("", selection: Binding(
+                        get: { profile.secondarySortBy ?? .name },
+                        set: { profile.secondarySortBy = $0 }
+                    )) {
+                        Text("Ninguno").tag(ScanProfile.SortField.name)
+                        ForEach(ScanProfile.SortField.allCases, id: \.self) { field in
+                            Text(field.rawValue).tag(field)
+                        }
                     }
+                    .labelsHidden()
+                    .frame(width: 100)
                 }
-                .labelsHidden()
             }
         }
-        .padding(10)
-        .background(Color(nsColor: .windowBackgroundColor))
-        .cornerRadius(8)
-        .overlay(
-            RoundedRectangle(cornerRadius: 8)
-                .stroke(Color.gray.opacity(0.3), lineWidth: 1)
-        )
-        .shadow(color: .black.opacity(0.05), radius: 2, x: 0, y: 1)
+        .padding(.vertical, 4)
     }
 
     private var optionsSection: some View {
         VStack(alignment: .leading, spacing: 8) {
-            sectionLabel("Options")
+            Text("OPCIONES")
+                .font(.caption2)
+                .fontWeight(.semibold)
+                .foregroundColor(.secondary)
+                .tracking(0.5)
 
-            VStack(spacing: 6) {
+            VStack(spacing: 8) {
                 HStack {
-                    Text("Limit:")
+                    Text("Límite:")
                         .font(.caption)
                         .foregroundColor(.secondary)
-                    Text(profile.limit == 0 ? "None" : "\(profile.limit)")
+                    Spacer()
+                    Text(profile.limit == 0 ? "Sin límite" : "\(profile.limit)")
                         .font(.caption)
                         .fontWeight(.medium)
-                    Spacer()
                 }
                 Slider(value: Binding(
                     get: { Double(profile.limit) },
                     set: { profile.limit = Int($0) }
                 ), in: 0...500, step: 10)
                 .labelsHidden()
-            }
 
-            Toggle("Exclude System Dirs", isOn: $profile.excludeSystemDirs)
-                .font(.caption)
+                Toggle("Excluir dirs. de sistema", isOn: $profile.excludeSystemDirs)
+                    .font(.caption)
+            }
         }
-        .padding(10)
-        .background(Color(nsColor: .windowBackgroundColor))
-        .cornerRadius(8)
-        .overlay(
-            RoundedRectangle(cornerRadius: 8)
-                .stroke(Color.gray.opacity(0.3), lineWidth: 1)
-        )
-        .shadow(color: .black.opacity(0.05), radius: 2, x: 0, y: 1)
+        .padding(.vertical, 4)
     }
 
     private var historyButton: some View {
         Button(action: { showingHistory = true }) {
             HStack {
-                Image(systemName: "clock.arrow.circlepath")
-                Text("Scan History")
+                Image(systemName: "clock")
+                    .font(.subheadline)
+                Text("Historial")
                     .font(.subheadline)
                 Spacer()
                 Image(systemName: "chevron.right")
                     .font(.caption2)
                     .foregroundColor(.secondary)
             }
-            .padding(10)
-            .background(Color(nsColor: .windowBackgroundColor))
-            .cornerRadius(8)
-            .overlay(
-                RoundedRectangle(cornerRadius: 8)
-                    .stroke(Color.gray.opacity(0.3), lineWidth: 1)
-            )
-            .shadow(color: .black.opacity(0.05), radius: 2, x: 0, y: 1)
         }
         .buttonStyle(.plain)
-    }
-
-    private func sectionLabel(_ title: String) -> some View {
-        Text(title.uppercased())
-            .font(.caption2)
-            .fontWeight(.semibold)
-            .foregroundColor(.secondary)
-            .tracking(0.5)
     }
 }
 
@@ -249,9 +223,9 @@ struct DirectoryPickerButton: View {
             HStack {
                 Image(systemName: "folder.fill")
                     .foregroundColor(.accentColor)
-                    .font(.caption)
                 Text(truncatedPath)
                     .font(.caption)
+                    .foregroundColor(.primary)
                     .lineLimit(1)
                     .truncationMode(.middle)
                 Spacer()
@@ -267,8 +241,13 @@ struct DirectoryPickerButton: View {
     }
 
     private var truncatedPath: String {
-        if directory.count > 35 {
-            return "..." + String(directory.suffix(32))
+        let home = FileManager.default.homeDirectoryForCurrentUser.path
+        if directory.hasPrefix(home) {
+            let relative = String(directory.dropFirst(home.count))
+            return "~" + relative
+        }
+        if directory.count > 40 {
+            return "..." + String(directory.suffix(37))
         }
         return directory
     }
