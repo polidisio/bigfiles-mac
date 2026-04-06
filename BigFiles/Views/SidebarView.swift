@@ -36,7 +36,7 @@ struct SidebarView: View {
             Image(systemName: "magnifyingglass")
                 .foregroundColor(.secondary)
                 .font(.caption)
-            TextField("Buscar...", text: $profile.searchText)
+            TextField("Search...", text: $profile.searchText)
                 .textFieldStyle(.plain)
                 .font(.caption)
         }
@@ -48,7 +48,7 @@ struct SidebarView: View {
 
     private var directorySection: some View {
         VStack(alignment: .leading, spacing: 6) {
-            Text("DIRECTORIO")
+            Text("DIRECTORY")
                 .font(.caption2)
                 .fontWeight(.semibold)
                 .foregroundColor(.secondary)
@@ -61,7 +61,7 @@ struct SidebarView: View {
 
     private var sizeSection: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("TAMAÑO")
+            Text("SIZE")
                 .font(.caption2)
                 .fontWeight(.semibold)
                 .foregroundColor(.secondary)
@@ -69,7 +69,7 @@ struct SidebarView: View {
 
             VStack(spacing: 8) {
                 HStack {
-                    Text("Mínimo:")
+                    Text("Min:")
                         .font(.caption)
                         .foregroundColor(.primary)
                     Spacer()
@@ -84,7 +84,7 @@ struct SidebarView: View {
                 Divider()
 
                 HStack {
-                    Text("Máximo:")
+                    Text("Max:")
                         .font(.caption)
                         .foregroundColor(.primary)
                     if let maxMB = profile.maxSizeMB {
@@ -93,7 +93,7 @@ struct SidebarView: View {
                             .fontWeight(.medium)
                             .foregroundColor(.primary)
                     } else {
-                        Text("Sin límite")
+                        Text("No limit")
                             .font(.caption)
                             .foregroundColor(.secondary)
                     }
@@ -115,7 +115,7 @@ struct SidebarView: View {
                     ), in: 1...10000, step: 10)
                     .labelsHidden()
                 } else {
-                    Button("Establecer máximo") {
+                    Button("Set max") {
                         profile.maxSizeMB = 500
                     }
                     .font(.caption2)
@@ -128,7 +128,7 @@ struct SidebarView: View {
 
     private var sortSection: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("ORDENAR")
+            Text("SORT")
                 .font(.caption2)
                 .fontWeight(.semibold)
                 .foregroundColor(.secondary)
@@ -136,7 +136,7 @@ struct SidebarView: View {
 
             VStack(spacing: 8) {
                 HStack {
-                    Text("Principal:")
+                    Text("Primary:")
                         .font(.caption)
                         .foregroundColor(.primary)
                     Spacer()
@@ -150,7 +150,7 @@ struct SidebarView: View {
                 }
 
                 HStack {
-                    Text("Secundario:")
+                    Text("Secondary:")
                         .font(.caption)
                         .foregroundColor(.primary)
                     Spacer()
@@ -158,7 +158,7 @@ struct SidebarView: View {
                         get: { profile.secondarySortBy ?? .name },
                         set: { profile.secondarySortBy = $0 }
                     )) {
-                        Text("Ninguno").tag(ScanProfile.SortField.name)
+                        Text("None").tag(ScanProfile.SortField.name)
                         ForEach(ScanProfile.SortField.allCases, id: \.self) { field in
                             Text(field.rawValue).tag(field)
                         }
@@ -173,7 +173,7 @@ struct SidebarView: View {
 
     private var optionsSection: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("OPCIONES")
+            Text("OPTIONS")
                 .font(.caption2)
                 .fontWeight(.semibold)
                 .foregroundColor(.secondary)
@@ -181,11 +181,11 @@ struct SidebarView: View {
 
             VStack(spacing: 8) {
                 HStack {
-                    Text("Límite:")
+                    Text("Limit:")
                         .font(.caption)
                         .foregroundColor(.primary)
                     Spacer()
-                    Text(profile.limit == 0 ? "Sin límite" : "\(profile.limit)")
+                    Text(profile.limit == 0 ? "No limit" : "\(profile.limit)")
                         .font(.caption)
                         .fontWeight(.medium)
                         .foregroundColor(.primary)
@@ -196,7 +196,7 @@ struct SidebarView: View {
                 ), in: 0...500, step: 10)
                 .labelsHidden()
 
-                Toggle("Excluir dirs. de sistema", isOn: $profile.excludeSystemDirs)
+                Toggle("Exclude system dirs", isOn: $profile.excludeSystemDirs)
                     .font(.caption)
                     .foregroundColor(.primary)
             }
@@ -210,7 +210,7 @@ struct SidebarView: View {
                 Image(systemName: "clock")
                     .font(.subheadline)
                     .foregroundColor(.accentColor)
-                Text("Historial")
+                Text("History")
                     .font(.subheadline)
                     .foregroundColor(.primary)
                 Spacer()
